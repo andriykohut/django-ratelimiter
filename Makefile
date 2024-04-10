@@ -14,7 +14,7 @@ test: run-backends
 	poetry run pytest --cov django_limits
 
 test-ci:
-	poetry run pytest --cov esdb --cov-report=xml
+	poetry run pytest --cov django_limits --cov-report=xml
 
 html-cov: test
 	poetry run coverage html
