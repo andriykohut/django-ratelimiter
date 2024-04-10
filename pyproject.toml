@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "django-limits"
+version = "0.1.0"
+description = "Rate-limiting for django"
+authors = ["Andrii Kohut <kogut.andriy@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+django = "*"
+limits = ">=3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = "^4.2.7"
+mypy = "^1.9.0"
+black = "^24.3.0"
+ruff = "^0.3.5"
+pytest = "^8.1.1"
+freezegun = "^1.4.0"
+pymemcache = "^4.0.0"
+redis = "^5.0.3"
+pytest-cov = "^5.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
