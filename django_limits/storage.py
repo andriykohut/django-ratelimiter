@@ -49,7 +49,7 @@ class CacheStorage(Storage):
         try:
             self.cache.get("django-limits-check")
             return True
-        except:
+        except:  # noqa: E722
             return False
 
     def reset(self) -> int | None:

@@ -210,34 +210,6 @@ def test_cvb():
     assert response.status_code == 429
 
 
-def test_cvb():
-    @method_decorator(ratelimit("1/minute"), name="dispatch")
-    class ViewA(View):
-        def get(self, _):
-            return HttpResponse("OK")
-
-        def post(self, _):
-            return HttpResponse("OK")
-
-    request = RequestFactory().get("/")
-    response = ViewA.as_view()(request)
-    assert response.status_code == 200
-
-    response = ViewA.as_view()(request)
-    assert response.status_code == 429
-
-    class ViewB(View):
-        @ratelimit("1/minute")
-        def get(self, _):
-            return HttpResponse("OK")
-
-    response = ViewB.as_view()(request)
-    assert response.status_code == 200
-
-    response = ViewB.as_view()(request)
-    assert response.status_code == 429
-
-
 @pytest.mark.parametrize(
     "storage",
     [
