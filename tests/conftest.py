@@ -4,8 +4,6 @@ from django.core import management
 
 import pytest
 
-from django_limits.types import ViewFunc
-
 
 @pytest.fixture(scope="session", autouse=True)
 def configure_settings():

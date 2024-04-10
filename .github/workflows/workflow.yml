@@ -1,0 +1,30 @@
+name: django-limits
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Start storage backends
+        run: make run-backends
+      - name: Install poetry
+        run: curl -sSL https://install.python-poetry.org | python -
+      - name: Install deps
+        run: poetry install
+      - name: Lint
+        run: make lint
+      - name: Tests
+        run:  make test-ci
+      - name: Coverage
+        uses: codecov/codecov-action@v4
+
