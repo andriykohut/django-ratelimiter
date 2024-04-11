@@ -1,4 +1,4 @@
-# django-limits
+# django-ratelimiter
 
 TBD
 
@@ -6,7 +6,7 @@ TBD
 
 ```py
 from django.http import HttpRequest, HttpResponse
-from django_limits import ratelimit
+from django_ratelimiter import ratelimit
 from limits.storage import RedisStorage
 
 # defaults, limit all requests

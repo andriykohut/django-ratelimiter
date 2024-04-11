@@ -10,8 +10,8 @@ from django.views import View
 from limits import parse
 from limits.storage import MemoryStorage, RedisStorage, MemcachedStorage
 
-from django_limits import ratelimit
-from django_limits.decorator import get_rate_limiter
+from django_ratelimiter import ratelimit
+from django_ratelimiter.decorator import get_rate_limiter
 
 
 @pytest.fixture

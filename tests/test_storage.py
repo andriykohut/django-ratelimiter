@@ -3,7 +3,7 @@ import time
 import uuid
 import pytest
 
-from django_limits.storage import CacheStorage
+from django_ratelimiter.storage import CacheStorage
 
 
 @pytest.mark.parametrize(
