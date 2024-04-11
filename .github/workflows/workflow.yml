@@ -26,5 +26,8 @@ jobs:
       - name: Tests
         run:  make test-ci
       - name: Coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: andriykohut/django-limits
 
