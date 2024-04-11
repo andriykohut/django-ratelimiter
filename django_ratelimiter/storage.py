@@ -16,7 +16,7 @@ class CacheStorage(Storage):
         **options: float | str | bool,
     ) -> None:
         self.cache_name = cache or cast(
-            str, getattr(settings, "DJANGO_LIMITS_CACHE", "default")
+            str, getattr(settings, "DJANGO_RATELIMITER_CACHE", "default")
         )
         self.cache: BaseCache = caches[self.cache_name]
         super().__init__(uri=None, wrap_exceptions=wrap_exceptions, **options)
@@ -47,7 +47,7 @@ class CacheStorage(Storage):
 
     def check(self) -> bool:
         try:
-            self.cache.get("django-limits-check")
+            self.cache.get("django-ratelimiter-check")
             return True
         except:  # noqa: E722
             return False

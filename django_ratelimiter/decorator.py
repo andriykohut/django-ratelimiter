@@ -7,8 +7,8 @@ from django.http import HttpRequest, HttpResponse
 from limits.strategies import STRATEGIES, RateLimiter
 from limits.storage import Storage
 from limits import parse
-from django_limits.storage import CacheStorage
-from django_limits.types import ViewFunc, P
+from django_ratelimiter.storage import CacheStorage
+from django_ratelimiter.types import ViewFunc, P
 
 
 def build_identifiers(
@@ -34,7 +34,7 @@ def get_rate_limiter(strategy: str, storage: Storage | None = None) -> RateLimit
             f"Unknown strategy {strategy}, must be one of {STRATEGIES.keys()}"
         )
     if not storage:
-        default_storage = getattr(settings, "DJANGO_LIMITS_CACHE", None)
+        default_storage = getattr(settings, "DJANGO_RATELIMITER_CACHE", None)
         storage = (
             default_storage if isinstance(default_storage, Storage) else CacheStorage()
         )
@@ -58,7 +58,7 @@ def ratelimit(
         ) -> HttpResponse:
             rate_str = rate(request) if callable(rate) else rate
             parsed_rate = parse(rate_str)
-            if getattr(settings, "DJANGO_LIMITS_ENABLE", True) and (
+            if getattr(settings, "DJANGO_RATELIMITER_CACHE", True) and (
                 not methods or request.method in methods
             ):
                 identifiers = build_identifiers(func, methods)
