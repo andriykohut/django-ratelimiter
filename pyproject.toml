@@ -23,6 +23,7 @@ pymemcache = "^4.0.0"
 redis = "^5.0.3"
 pytest-cov = "^5.0.0"
 mkdocs = "^1.5.3"
+mkdocs-material = "^9.5.17"
 
 [build-system]
 requires = ["poetry-core"]

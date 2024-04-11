@@ -1,1 +1,3 @@
 site_name: django-ratelimiter
+theme:
+  name: material
