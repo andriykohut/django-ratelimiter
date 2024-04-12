@@ -28,16 +28,21 @@ def build_identifiers(
     return identifiers
 
 
+def get_storage() -> Storage:
+    cache_name: str | None = getattr(settings, "DJANGO_RATELIMITER_CACHE", None)
+    storage: Storage | None = getattr(settings, "DJANGO_RATELIMITER_STORAGE", None)
+    if cache_name and storage:
+        raise ValueError("DJANGO_RATELIMITER_CACHE and DJANGO_RATELIMITER_STORAGE can't be used together")
+    return storage or CacheStorage(cache_name or "default")
+
+
+
 def get_rate_limiter(strategy: str, storage: Storage | None = None) -> RateLimiter:
     if strategy not in STRATEGIES:
         raise ValueError(
             f"Unknown strategy {strategy}, must be one of {STRATEGIES.keys()}"
         )
-    if not storage:
-        default_storage = getattr(settings, "DJANGO_RATELIMITER_CACHE", None)
-        storage = (
-            default_storage if isinstance(default_storage, Storage) else CacheStorage()
-        )
+    storage = storage or get_storage()
     return STRATEGIES[strategy](storage)
 
 
@@ -48,7 +53,10 @@ def ratelimit(
     strategy: str = "fixed-window",
     response: HttpResponse | None = None,
     storage: Storage | None = None,
+    cache: str | None = None,
 ) -> Callable[[ViewFunc], ViewFunc]:
+    if storage and cache:
+        raise ValueError("Can't use both cache and storage")
     rate_limiter = get_rate_limiter(strategy, storage)
 
     def decorator(func: ViewFunc) -> ViewFunc:

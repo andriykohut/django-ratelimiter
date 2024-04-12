@@ -11,14 +11,11 @@ class CacheStorage(Storage):
 
     def __init__(
         self,
-        cache: str | None = None,
+        cache: str,
         wrap_exceptions: bool = False,
         **options: float | str | bool,
     ) -> None:
-        self.cache_name = cache or cast(
-            str, getattr(settings, "DJANGO_RATELIMITER_CACHE", "default")
-        )
-        self.cache: BaseCache = caches[self.cache_name]
+        self.cache: BaseCache = caches[cache]
         super().__init__(uri=None, wrap_exceptions=wrap_exceptions, **options)
 
     @property
