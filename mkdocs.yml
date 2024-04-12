@@ -1,3 +1,21 @@
 site_name: django-ratelimiter
+site_url: https://django-ratelimiter.readthedocs.io/
+site_author: Andrii Kohut
+site_description: >-
+  Rate limiting for django views
+repo_name: andriykohut/django-ratelimiter
+repo_url: https://github.com/andriykohut/django-ratelimiter
+copyright: Copyright &copy; 2024 Andrii Kohut
 theme:
   name: material
+  features:
+    - navigation.footer
+    - content.code.copy
+
+markdown_extensions:
+- pymdownx.highlight:
+    anchor_linenums: true
+- pymdownx.superfences
+
+extra:
+  generator: false
