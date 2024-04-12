@@ -1,4 +1,4 @@
-from typing import Callable, Sequence
+from typing import Callable, Sequence, Union, Optional
 from functools import wraps, partial
 
 from django.db import models
@@ -12,7 +12,7 @@ from django_ratelimiter.types import ViewFunc, P
 
 
 def build_identifiers(
-    func: ViewFunc, methods: str | Sequence[str] | None = None
+    func: ViewFunc, methods: Union[str, Sequence[str], None] = None
 ) -> list[str]:
     if isinstance(func, partial):
         # method_decorator scenario
@@ -29,8 +29,8 @@ def build_identifiers(
 
 
 def get_storage() -> Storage:
-    cache_name: str | None = getattr(settings, "DJANGO_RATELIMITER_CACHE", None)
-    storage: Storage | None = getattr(settings, "DJANGO_RATELIMITER_STORAGE", None)
+    cache_name: Optional[str] = getattr(settings, "DJANGO_RATELIMITER_CACHE", None)
+    storage: Optional[Storage] = getattr(settings, "DJANGO_RATELIMITER_STORAGE", None)
     if cache_name and storage:
         raise ValueError(
             "DJANGO_RATELIMITER_CACHE and DJANGO_RATELIMITER_STORAGE can't be used together"
@@ -38,7 +38,7 @@ def get_storage() -> Storage:
     return storage or CacheStorage(cache_name or "default")
 
 
-def get_rate_limiter(strategy: str, storage: Storage | None = None) -> RateLimiter:
+def get_rate_limiter(strategy: str, storage: Optional[Storage] = None) -> RateLimiter:
     if strategy not in STRATEGIES:
         raise ValueError(
             f"Unknown strategy {strategy}, must be one of {STRATEGIES.keys()}"
@@ -48,13 +48,13 @@ def get_rate_limiter(strategy: str, storage: Storage | None = None) -> RateLimit
 
 
 def ratelimit(
-    rate: str | Callable[[HttpRequest], str],
-    key: str | Callable[[HttpRequest], str] | None = None,
-    methods: str | Sequence[str] | None = None,
+    rate: Union[str, Callable[[HttpRequest], str]],
+    key: Union[str, Callable[[HttpRequest], str], None] = None,
+    methods: Union[str, Sequence[str], None] = None,
     strategy: str = "fixed-window",
-    response: HttpResponse | None = None,
-    storage: Storage | None = None,
-    cache: str | None = None,
+    response: Optional[HttpResponse] = None,
+    storage: Optional[Storage] = None,
+    cache: Optional[str] = None,
 ) -> Callable[[ViewFunc], ViewFunc]:
     if storage and cache:
         raise ValueError("Can't use both cache and storage")
