@@ -38,7 +38,7 @@ With `limits` storage:
 ```py
 from limits.storage import RedisStorage
 
-DJANGO_RATELIMITER_CACHE = RedisStorage(uri="redis://localhost:6379/0")
+DJANGO_RATELIMITER_STORAGE = RedisStorage(uri="redis://localhost:6379/0")
 ```
 
 ### View decorator
