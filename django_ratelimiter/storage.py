@@ -1,4 +1,5 @@
 import time
+from typing import Union, Optional
 
 from django.core.cache import caches, BaseCache
 
@@ -11,13 +12,13 @@ class CacheStorage(Storage):
         self,
         cache: str,
         wrap_exceptions: bool = False,
-        **options: float | str | bool,
+        **options: Union[float, str, bool],
     ) -> None:
         self.cache: BaseCache = caches[cache]
         super().__init__(uri=None, wrap_exceptions=wrap_exceptions, **options)
 
     @property
-    def base_exceptions(self) -> type[Exception] | tuple[type[Exception], ...]:
+    def base_exceptions(self) -> Union[type[Exception], tuple[type[Exception], ...]]:
         return Exception
 
     def get(self, key: str) -> int:
@@ -47,7 +48,7 @@ class CacheStorage(Storage):
         except:  # noqa: E722
             return False
 
-    def reset(self) -> int | None:
+    def reset(self) -> Optional[int]:
         raise NotImplementedError
 
     def clear(self, key: str) -> None:
