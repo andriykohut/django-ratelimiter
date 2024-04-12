@@ -1,7 +1,5 @@
 import time
-from typing import cast
 
-from django.conf import settings
 from django.core.cache import caches, BaseCache
 
 from limits.storage import Storage

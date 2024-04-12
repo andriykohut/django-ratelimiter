@@ -32,9 +32,10 @@ def get_storage() -> Storage:
     cache_name: str | None = getattr(settings, "DJANGO_RATELIMITER_CACHE", None)
     storage: Storage | None = getattr(settings, "DJANGO_RATELIMITER_STORAGE", None)
     if cache_name and storage:
-        raise ValueError("DJANGO_RATELIMITER_CACHE and DJANGO_RATELIMITER_STORAGE can't be used together")
+        raise ValueError(
+            "DJANGO_RATELIMITER_CACHE and DJANGO_RATELIMITER_STORAGE can't be used together"
+        )
     return storage or CacheStorage(cache_name or "default")
-
 
 
 def get_rate_limiter(strategy: str, storage: Storage | None = None) -> RateLimiter:
