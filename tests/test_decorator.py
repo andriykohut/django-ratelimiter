@@ -85,8 +85,8 @@ def test_key_string(fixed_window):
     response = view(request)
     assert response.status_code == 200
     assert (
-        ":1:LIMITER/test_decorator/test_key_string.<locals>.view/14/5/1/minute"
-        in cache._cache
+            ":1:LIMITER/test_decorator/test_key_string.<locals>.view/14/5/1/minute"
+            in cache._cache
     )
     stats = fixed_window.get_window_stats(
         rate, view.__module__, view.__qualname__, request.user.pk
@@ -230,6 +230,54 @@ def test_limits_storage(storage):
 
     request = RequestFactory().get("/")
 
+    for _ in range(5):
+        response = view(request)
+        assert response.status_code == 200
+
+    response = view(request)
+    assert response.status_code == 429
+
+
+def test_drf(fixed_window):
+    from rest_framework.decorators import api_view
+    from rest_framework.response import Response
+    from rest_framework.test import APIRequestFactory
+    from rest_framework.viewsets import ViewSet
+    from rest_framework.views import APIView
+
+    request = APIRequestFactory().get("/")
+
+    @api_view(["GET"])
+    @ratelimit("5/minute")
+    def view_func(_):
+        return Response({"hello": "world"})
+
+    for _ in range(5):
+        response = view_func(request)
+        assert response.status_code == 200
+
+    response = view_func(request)
+    assert response.status_code == 429
+
+    @method_decorator(ratelimit("5/minute"), name="dispatch")
+    class TestViewSet(ViewSet):
+        def list(self, _):
+            return Response("200")
+
+    view = TestViewSet.as_view({"get": "list"})
+    for _ in range(5):
+        response = view(request)
+        assert response.status_code == 200
+
+    response = view(request)
+    assert response.status_code == 429
+
+    @method_decorator(ratelimit("5/minute"), name="dispatch")
+    class TestView(APIView):
+        def get(self, _):
+            return Response("200")
+
+    view = TestView.as_view()
     for _ in range(5):
         response = view(request)
         assert response.status_code == 200
