@@ -1,7 +1,7 @@
 # django-ratelimiter
 
 [![PyPI version](https://badge.fury.io/py/django-ratelimiter.svg)](https://pypi.org/project/django-ratelimiter/)
-[![CI](https://github.com/andriykohut/django-ratelimiter/actions/workflows/workflow.yml/badge.svg)](https://github.com/andriykohut/django-ratelimiter/actions/workflows/workflow.yml?query=branch%3Amain)
+[![CI](https://github.com/andriykohut/django-ratelimiter/actions/workflows/ci.yml/badge.svg)](https://github.com/andriykohut/django-ratelimiter/actions/workflows/ci.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/andriykohut/django-ratelimiter/branch/main/graph/badge.svg)](https://codecov.io/gh/andriykohut/django-ratelimiter)
 [![Python Versions](https://img.shields.io/pypi/pyversions/django-ratelimiter)](https://pypi.python.org/pypi/django-ratelimiter/)
 [![license](https://img.shields.io/pypi/l/django-ratelimiter.svg)](https://pypi.python.org/pypi/django-ratelimiter)
