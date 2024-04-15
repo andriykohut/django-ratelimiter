@@ -85,8 +85,8 @@ def test_key_string(fixed_window):
     response = view(request)
     assert response.status_code == 200
     assert (
-            ":1:LIMITER/test_decorator/test_key_string.<locals>.view/14/5/1/minute"
-            in cache._cache
+        ":1:LIMITER/test_decorator/test_key_string.<locals>.view/14/5/1/minute"
+        in cache._cache
     )
     stats = fixed_window.get_window_stats(
         rate, view.__module__, view.__qualname__, request.user.pk
