@@ -4,6 +4,7 @@ import freezegun
 import pytest
 from django.core.cache import cache
 from limits import parse
+from ninja.testing import TestClient
 
 from django_ratelimiter.decorator import get_rate_limiter
 from test_app import views
@@ -179,3 +180,10 @@ def test_limits_storage(path, storage, view):
 @pytest.mark.django_db
 def test_drf(url, drf_client):
     assert wait_for_rate_limit(url, client=drf_client) == 5
+
+
+def test_ninja(client):
+    for _ in range(5):
+        resp = client.get("/ninja/add?a=2&b=3")
+        assert resp.status_code == 200
+        assert resp.json() == {"result": 5}

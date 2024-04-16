@@ -42,5 +42,6 @@ urlpatterns = [
     path("storage/memcached/", views.memcached, name="memcached_storage"),
     path("drf/api-view/", views.drf_api_view, name="drf_api_view"),
     path("drf/view/", views.TestDRFView.as_view(), name="drf_view"),
+    path("ninja/", views.api.urls),
     *router.urls,
 ]

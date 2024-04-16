@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_http_methods
 from limits.storage import MemoryStorage, RedisStorage, MemcachedStorage
+from ninja import NinjaAPI
 from rest_framework import viewsets, serializers, views
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
@@ -93,3 +94,11 @@ class TestViewSet(viewsets.ModelViewSet):
 class TestDRFView(views.APIView):
     def get(self, _: Request) -> Response:
         return Response("200")
+
+
+api = NinjaAPI()
+
+
+@api.get("/add")
+def add(request: HttpRequest, a: int, b: int):
+    return {"result": a + b}
