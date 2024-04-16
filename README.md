@@ -119,3 +119,10 @@ from limits.storage import RedisStorage
 def view(request):
     return HttpResponse("OK")
 ```
+
+### DRF/ninja/class-based views
+
+`django-ratelimiter` is framework-agnostic, it should work with DRF/ninja out of the box.
+Class-based views are also supported with [method_decorator](https://docs.djangoproject.com/en/5.0/topics/class-based-views/intro/#decorating-the-class).
+
+See examples in [test_app](./test_app/views.py)
