@@ -2,16 +2,14 @@ from datetime import datetime
 
 import freezegun
 import pytest
-from django.http import HttpResponse
-from django.test import RequestFactory
 from django.core.cache import cache
-from django.utils.decorators import method_decorator
-from django.views import View
 from limits import parse
-from limits.storage import MemoryStorage, RedisStorage, MemcachedStorage
 
-from django_ratelimiter import ratelimit
 from django_ratelimiter.decorator import get_rate_limiter
+from test_app import views
+from tests.utils import wait_for_rate_limit
+
+TEST_RATE = parse("5/minute")
 
 
 @pytest.fixture
@@ -25,262 +23,159 @@ def clear_cache():
 
 
 @freezegun.freeze_time(datetime.now(), auto_tick_seconds=1)
-def test_defaults(fixed_window):
-    rate_str = "5/minute"
-    rate = parse(rate_str)
-
-    @ratelimit(rate_str)
-    def view(_):
-        return HttpResponse("OK")
-
-    request = RequestFactory().get("/")
-
+def test_defaults(client, fixed_window):
+    identifiers = views.defaults.__module__, views.defaults.__qualname__
     initial_stats = None
 
     for i in reversed(range(5)):
-        response = view(request)
+        response = client.get(f"/defaults/{i}/")
         assert response.status_code == 200
-        stats = fixed_window.get_window_stats(rate, view.__module__, view.__qualname__)
+        stats = fixed_window.get_window_stats(TEST_RATE, *identifiers)
         if initial_stats is None:
             initial_stats = stats
         assert stats.remaining == i
         assert stats.reset_time == initial_stats.reset_time
 
-    response = view(request)
+    response = client.get("/defaults/7/")
     assert response.status_code == 429
-    stats = fixed_window.get_window_stats(rate, view.__module__, view.__qualname__)
+    stats = fixed_window.get_window_stats(TEST_RATE, *identifiers)
     assert stats.reset_time == initial_stats.reset_time
 
 
-def test_key_string(fixed_window):
-    from django.contrib.auth.models import User
-
-    rate_str = "5/minute"
-    rate = parse(rate_str)
-
-    @ratelimit(rate_str, key="user")
-    def view(_):
-        return HttpResponse("OK")
-
-    request = RequestFactory().get("/")
-    request.user = User(pk=13)
-    stats = fixed_window.get_window_stats(
-        rate, view.__module__, view.__qualname__, request.user.pk
+def test_key_string(fixed_window, client, django_user_model):
+    user1 = django_user_model.objects.create_user(
+        username="user1", password="password1"
     )
+    user2 = django_user_model.objects.create_user(
+        username="user2", password="password2"
+    )
+    identifiers = views.by_string_key.__module__, views.by_string_key.__qualname__
+    stats = fixed_window.get_window_stats(TEST_RATE, *identifiers, user1.pk)
     assert stats.remaining == 5
 
+    client.force_login(user1)
+
     for _ in range(5):
-        response = view(request)
+        response = client.get("/by-string-key/")
         assert response.status_code == 200
 
-    response = view(request)
+    response = client.get("/by-string-key/")
     assert response.status_code == 429
-    stats = fixed_window.get_window_stats(
-        rate, view.__module__, view.__qualname__, request.user.pk
-    )
+    stats = fixed_window.get_window_stats(TEST_RATE, *identifiers, user1.pk)
     assert stats.remaining == 0
 
-    request = RequestFactory().get("/")
-    request.user = User(pk=14)
-    response = view(request)
+    client.force_login(user2)
+
+    response = client.get("/by-string-key/")
     assert response.status_code == 200
     assert (
-        ":1:LIMITER/test_decorator/test_key_string.<locals>.view/14/5/1/minute"
-        in cache._cache
+        f":1:LIMITER/test_app.views/by_string_key/{user1.pk}/5/1/minute" in cache._cache
     )
-    stats = fixed_window.get_window_stats(
-        rate, view.__module__, view.__qualname__, request.user.pk
-    )
+    stats = fixed_window.get_window_stats(TEST_RATE, *identifiers, user2.pk)
     assert stats.remaining == 4
 
 
-def test_key_function():
-    from django.contrib.auth.models import User
+def test_key_function(django_user_model, client, fixed_window):
+    user1 = django_user_model.objects.create_user(
+        username="user1", password="password1"
+    )
+    user2 = django_user_model.objects.create_user(
+        username="user2", password="password2"
+    )
+    identifiers = views.by_string_key.__module__, views.by_string_key.__qualname__
+    stats = fixed_window.get_window_stats(TEST_RATE, *identifiers, user1.pk)
+    assert stats.remaining == 5
 
-    @ratelimit("5/minute", key=lambda r: r.user.username)
-    def view(_):
-        return HttpResponse("OK")
+    client.force_login(user1)
 
-    request = RequestFactory().get("/")
-    request.user = User(pk=13, username="a")
+    assert wait_for_rate_limit("/by-func-key/", client=client) == 5
 
-    for _ in range(5):
-        response = view(request)
-        assert response.status_code == 200
-
-    response = view(request)
+    response = client.get("/by-func-key/")
     assert response.status_code == 429
 
-    request = RequestFactory().get("/")
-    request.user = User(pk=14, username="b")
-    response = view(request)
+    client.force_login(user2)
+
+    response = client.get("/by-func-key/")
     assert response.status_code == 200
 
 
-def test_methods():
-    @ratelimit("5/minute", methods=["POST", "PUT"])
-    def view(_):
-        return HttpResponse("OK")
-
-    request = RequestFactory().get("/")
+def test_methods(client):
     for _ in range(6):
-        response = view(request)
+        response = client.get("/by-method/")
         assert response.status_code == 200
 
     assert not cache._cache
 
-    request = RequestFactory().post("/")
-    for _ in range(5):
-        response = view(request)
-        assert response.status_code == 200
-    response = view(request)
+    assert wait_for_rate_limit("/by-method/", method="POST") == 5
+
+    response = client.post("/by-method/")
     assert response.status_code == 429
-    request = RequestFactory().put("/")
-    response = view(request)
+
+    response = client.put("/by-method/")
     assert response.status_code == 429
-    request = RequestFactory().get("/")
-    response = view(request)
+
+    response = client.get("/by-method/")
     assert response.status_code == 200
 
 
 @freezegun.freeze_time(datetime.now(), auto_tick_seconds=1)
-def test_fixed_window_with_elastic_expiry():
-    request = RequestFactory().get("/")
-
+def test_fixed_window_with_elastic_expiry(client):
     rate_limiter = get_rate_limiter("fixed-window-elastic-expiry")
-
-    @ratelimit("5/minute", strategy="fixed-window-elastic-expiry")
-    def view(_):
-        return HttpResponse("OK")
-
-    item = parse("5/minute")
+    identifiers = (
+        views.fixed_window_elastic_expiry.__module__,
+        views.fixed_window_elastic_expiry.__qualname__,
+    )
 
     for i in range(5):
-        response = view(request)
+        response = client.get("/fixed-window-elastic-expiry/")
         assert response.status_code == 200
-        stats = rate_limiter.get_window_stats(item, view.__module__, view.__qualname__)
+        stats = rate_limiter.get_window_stats(TEST_RATE, *identifiers)
         assert stats.remaining == 5 - (i + 1)
 
-    response = view(request)
+    response = client.get("/fixed-window-elastic-expiry/")
     assert response.status_code == 429
-    new_stats = rate_limiter.get_window_stats(item, view.__module__, view.__qualname__)
+    new_stats = rate_limiter.get_window_stats(TEST_RATE, *identifiers)
     assert new_stats.remaining == 0
     assert new_stats.reset_time > stats.reset_time
 
 
-def test_custom_response():
-    request = RequestFactory().get("/")
-
-    @ratelimit("1/minute", response=HttpResponse(status=400))
-    def view(_):
-        return HttpResponse("OK")
-
-    response = view(request)
+def test_custom_response(client):
+    response = client.get("/teapot/")
     assert response.status_code == 200
 
-    response = view(request)
-    assert response.status_code == 400
+    response = client.get("/teapot/")
+    assert response.status_code == 418
 
 
-def test_cvb():
-    @method_decorator(ratelimit("1/minute"), name="dispatch")
-    class ViewA(View):
-        def get(self, _):
-            return HttpResponse("OK")
-
-        def post(self, _):
-            return HttpResponse("OK")
-
-    request = RequestFactory().get("/")
-    response = ViewA.as_view()(request)
+def test_cbv(client):
+    response = client.get("/cbv/")
     assert response.status_code == 200
 
-    response = ViewA.as_view()(request)
-    assert response.status_code == 429
-
-    class ViewB(View):
-        @ratelimit("1/minute")
-        def get(self, _):
-            return HttpResponse("OK")
-
-    response = ViewB.as_view()(request)
-    assert response.status_code == 200
-
-    response = ViewB.as_view()(request)
+    response = client.get("/cbv/")
     assert response.status_code == 429
 
 
 @pytest.mark.parametrize(
-    "storage",
+    "path, storage, view",
+    (
+        ("memory", views.memory_storage, views.memory),
+        ("redis", views.redis_storage, views.redis),
+        ("memcached", views.memcached_storage, views.memcached),
+    ),
+)
+def test_limits_storage(path, storage, view):
+    storage.clear(TEST_RATE.key_for(view.__module__, view.__qualname__))
+    assert wait_for_rate_limit(f"/storage/{path}/") == 5
+
+
+@pytest.mark.parametrize(
+    "url",
     [
-        MemoryStorage(),
-        RedisStorage(uri="redis://localhost:6379/0"),
-        MemcachedStorage(uri="memcached://localhost:11211"),
+        "/drf/api-view/",
+        "/drf/view/",
+        "/drf/viewset/",
     ],
 )
-def test_limits_storage(storage):
-    rate_str = "5/minute"
-    rate = parse(rate_str)
-
-    @ratelimit(rate_str, storage=storage)
-    def view(_):
-        return HttpResponse("OK")
-
-    storage.clear(rate.key_for(view.__module__, view.__qualname__))
-
-    request = RequestFactory().get("/")
-
-    for _ in range(5):
-        response = view(request)
-        assert response.status_code == 200
-
-    response = view(request)
-    assert response.status_code == 429
-
-
-def test_drf(fixed_window):
-    from rest_framework.decorators import api_view
-    from rest_framework.response import Response
-    from rest_framework.test import APIRequestFactory
-    from rest_framework.viewsets import ViewSet
-    from rest_framework.views import APIView
-
-    request = APIRequestFactory().get("/")
-
-    @api_view(["GET"])
-    @ratelimit("5/minute")
-    def view_func(_):
-        return Response({"hello": "world"})
-
-    for _ in range(5):
-        response = view_func(request)
-        assert response.status_code == 200
-
-    response = view_func(request)
-    assert response.status_code == 429
-
-    @method_decorator(ratelimit("5/minute"), name="dispatch")
-    class TestViewSet(ViewSet):
-        def list(self, _):
-            return Response("200")
-
-    view = TestViewSet.as_view({"get": "list"})
-    for _ in range(5):
-        response = view(request)
-        assert response.status_code == 200
-
-    response = view(request)
-    assert response.status_code == 429
-
-    @method_decorator(ratelimit("5/minute"), name="dispatch")
-    class TestView(APIView):
-        def get(self, _):
-            return Response("200")
-
-    view = TestView.as_view()
-    for _ in range(5):
-        response = view(request)
-        assert response.status_code == 200
-
-    response = view(request)
-    assert response.status_code == 429
+@pytest.mark.django_db
+def test_drf(url, drf_client):
+    assert wait_for_rate_limit(url, client=drf_client) == 5
