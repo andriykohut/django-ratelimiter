@@ -6,6 +6,7 @@ import pytest
 from django_ratelimiter.storage import CacheStorage
 
 
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "cache",
     [
