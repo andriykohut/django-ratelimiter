@@ -4,7 +4,6 @@ import freezegun
 import pytest
 from django.core.cache import cache
 from limits import parse
-from ninja.testing import TestClient
 
 from django_ratelimiter.decorator import get_rate_limiter
 from test_app import views
