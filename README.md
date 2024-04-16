@@ -52,7 +52,7 @@ For more details on storages refer to limits [documentation](https://limits.read
 
 - [Fixed window](https://limits.readthedocs.io/en/stable/strategies.html#fixed-window)
 - [Fixed Window with Elastic Expiry](https://limits.readthedocs.io/en/stable/strategies.html#fixed-window-with-elastic-expiry)
-- [Moving Window](https://limits.readthedocs.io/en/stable/strategies.html#moving-window). Only supported with `limits` storage by setting `DJANGO_RATELIMITER_STORAGE`.
+- [Moving Window](https://limits.readthedocs.io/en/stable/strategies.html#moving-window) - Only supported with `limits` storage by setting `DJANGO_RATELIMITER_STORAGE`
 
 ### View decorator
 
@@ -125,4 +125,4 @@ def view(request):
 `django-ratelimiter` is framework-agnostic, it should work with DRF/ninja out of the box.
 Class-based views are also supported with [method_decorator](https://docs.djangoproject.com/en/5.0/topics/class-based-views/intro/#decorating-the-class).
 
-See examples in [test_app](./test_app/views.py)
+See examples in [test_app](./test_app/views.py).
