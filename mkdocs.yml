@@ -19,3 +19,22 @@ markdown_extensions:
 
 extra:
   generator: false
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_root_heading: true
+            allow_inspection: true
+            show_signature: true
+            show_signature_annotations: true
+            line_length: 100
+            separate_signature: true
+            modernize_annotations: true
+            signature_crossrefs: true
