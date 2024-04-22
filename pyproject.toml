@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-ratelimiter"
-version = "0.1.1"
+version = "0.1.2"
 description = "Rate-limiting for django"
 authors = ["Andrii Kohut <kogut.andriy@gmail.com>"]
 license = "MIT"
@@ -10,7 +10,7 @@ readme = "README.md"
 python = ">=3.9"
 django = "*"
 limits = ">=3.10"
-typing-extensions = {version = "^4.11.0", python = "3.9"}
+typing-extensions = { version = "^4.11.0", python = "3.9" }
 
 
 [tool.poetry.group.dev.dependencies]
@@ -28,7 +28,7 @@ mkdocs-material = "^9.5.18"
 djangorestframework = "^3.15.1"
 django-ninja = "^1.1.0"
 pytest-django = "^4.8.0"
-mkdocstrings = {extras = ["python"], version = "^0.24.3"}
+mkdocstrings = { extras = ["python"], version = "^0.24.3" }
 
 [build-system]
 requires = ["poetry-core"]
