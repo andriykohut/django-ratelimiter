@@ -1,4 +1,4 @@
-from typing import Callable, Sequence, Union, Optional
+from typing import Callable, Literal, Sequence, Union, Optional
 from functools import wraps, partial
 
 from django.db import models
@@ -14,6 +14,7 @@ from django_ratelimiter.types import ViewFunc, P
 def build_identifiers(
     func: ViewFunc, methods: Union[str, Sequence[str], None] = None
 ) -> list[str]:
+    """Build view identifiers for storage cache key using function signature and list of methods."""
     if isinstance(func, partial):
         # method_decorator scenario
         identifiers = [
@@ -29,6 +30,8 @@ def build_identifiers(
 
 
 def get_storage() -> Storage:
+    """Returns a default storage backend instance, defined by either `DJANGO_RATELIMITER_CACHE`
+    or `DJANGO_RATELIMITER_STORAGE`."""
     cache_name: Optional[str] = getattr(settings, "DJANGO_RATELIMITER_CACHE", None)
     storage: Optional[Storage] = getattr(settings, "DJANGO_RATELIMITER_STORAGE", None)
     if cache_name and storage:
@@ -39,6 +42,7 @@ def get_storage() -> Storage:
 
 
 def get_rate_limiter(strategy: str, storage: Optional[Storage] = None) -> RateLimiter:
+    """Return a ratelimiter instance for given strategy."""
     if strategy not in STRATEGIES:
         raise ValueError(
             f"Unknown strategy {strategy}, must be one of {STRATEGIES.keys()}"
@@ -51,11 +55,26 @@ def ratelimit(
     rate: Union[str, Callable[[HttpRequest], str]],
     key: Union[str, Callable[[HttpRequest], str], None] = None,
     methods: Union[str, Sequence[str], None] = None,
-    strategy: str = "fixed-window",
+    strategy: Literal[
+        "fixed-window",
+        "fixed-window-elastic-expiry",
+        "moving-window",
+    ] = "fixed-window",
     response: Optional[HttpResponse] = None,
     storage: Optional[Storage] = None,
     cache: Optional[str] = None,
 ) -> Callable[[ViewFunc], ViewFunc]:
+    """Rate limiting decorator for wrapping views.
+
+    Arguments:
+        rate: rate string (i.e. `5/second`) or a callable that takes a request and returns a rate
+        key: request attribute or callable that returns a string to be used as identifier
+        methods: only rate limit specified method(s)
+        strategy: a name of rate limiting strategy
+        response: custom rate limit response instance
+        storage: override default rate limit storage
+        cache: override default cache name if using django cache storage backend
+    """
     if storage and cache:
         raise ValueError("Can't use both cache and storage")
     rate_limiter = get_rate_limiter(strategy, storage)

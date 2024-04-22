@@ -7,6 +7,7 @@ from limits.storage import Storage
 
 
 class CacheStorage(Storage):
+    """Rate limiting storage with django cache backend."""
 
     def __init__(
         self,
