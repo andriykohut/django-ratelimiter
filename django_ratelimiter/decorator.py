@@ -55,13 +55,17 @@ def ratelimit(
     rate: Union[str, Callable[[HttpRequest], str]],
     key: Union[str, Callable[[HttpRequest], str], None] = None,
     methods: Union[str, Sequence[str], None] = None,
-    strategy: Literal["fixed-window", "fixed-window-elastic-expiry", "moving-window"] = "fixed-window",
+    strategy: Literal[
+        "fixed-window",
+        "fixed-window-elastic-expiry",
+        "moving-window",
+    ] = "fixed-window",
     response: Optional[HttpResponse] = None,
     storage: Optional[Storage] = None,
     cache: Optional[str] = None,
 ) -> Callable[[ViewFunc], ViewFunc]:
     """Rate limiting decorator for wrapping views.
-    
+
     Arguments:
         rate: rate string (i.e. `5/second`) or a callable that takes a request and returns a rate
         key: request attribute or callable that returns a string to be used as identifier
