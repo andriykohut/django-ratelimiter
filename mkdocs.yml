@@ -1,5 +1,5 @@
 site_name: django-ratelimiter
-site_url: https://django-ratelimiter.readthedocs.io/
+site_url: https://andriykohut.github.io/django-ratelimiter/
 site_author: Andrii Kohut
 site_description: >-
   Rate limiting for django views

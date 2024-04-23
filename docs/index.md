@@ -4,7 +4,7 @@
 
 ---
 
-Documentation: <https://django-ratelimiter.readthedocs.io>
+Documentation: <https://andriykohut.github.io/django-ratelimiter/>
 
 Sources: <https://github.com/andriykohut/django-ratelimiter>
 

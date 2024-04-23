@@ -5,9 +5,9 @@ description = "Rate-limiting for django"
 authors = ["Andrii Kohut <kogut.andriy@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://django-ratelimiter.readthedocs.io/"
+homepage = "https://andriykohut.github.io/django-ratelimiter/"
 repository = "https://github.com/andriykohut/django-ratelimiter"
-documentation = "https://django-ratelimiter.readthedocs.io/"
+documentation = "https://andriykohut.github.io/django-ratelimiter/"
 keywords = ["rate-limit", "django"]
 
 [tool.poetry.dependencies]

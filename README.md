@@ -5,11 +5,11 @@
 [![codecov](https://codecov.io/gh/andriykohut/django-ratelimiter/branch/main/graph/badge.svg)](https://codecov.io/gh/andriykohut/django-ratelimiter)
 [![Python Versions](https://img.shields.io/pypi/pyversions/django-ratelimiter)](https://pypi.python.org/pypi/django-ratelimiter/)
 [![license](https://img.shields.io/pypi/l/django-ratelimiter.svg)](https://pypi.python.org/pypi/django-ratelimiter)
-[![docs](https://readthedocs.org/projects/django-ratelimiter/badge/?version=latest)](https://django-ratelimiter.readthedocs.io/)
+[![docs](https://github.com/andriykohut/django-ratelimiter/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://andriykohut.github.io/django-ratelimiter/)
 
 Rate limiting for django using [limits](https://limits.readthedocs.io/en/stable/).
 
-Documentation: <https://django-ratelimiter.readthedocs.io>
+Documentation: <https://andriykohut.github.io/django-ratelimiter/>
 
 ## Installation
 
