@@ -5,6 +5,10 @@ description = "Rate-limiting for django"
 authors = ["Andrii Kohut <kogut.andriy@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://django-ratelimiter.readthedocs.io/"
+repository = "https://github.com/andriykohut/django-ratelimiter"
+documentation = "https://django-ratelimiter.readthedocs.io/"
+keywords = ["rate-limit", "django"]
 
 [tool.poetry.dependencies]
 python = ">=3.9"

@@ -128,7 +128,6 @@ Middleware can be used instead of decorators for more general cases.
 from typing import Optional
 
 from django.http import HttpRequest
-from django.urls import resolve, Resolver404
 
 from django_ratelimiter.middleware import AbstractRateLimiterMiddleware
 
