@@ -50,3 +50,5 @@ from django_ratelimiter import ratelimit
 def view(request: HttpRequest) -> HttpResponse:
     return HttpResponse("OK")
 ```
+
+See [more examples](decorator.md).

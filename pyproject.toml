@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-ratelimiter"
-version = "0.1.2"
+version = "0.2.0"
 description = "Rate-limiting for django"
 authors = ["Andrii Kohut <kogut.andriy@gmail.com>"]
 license = "MIT"
