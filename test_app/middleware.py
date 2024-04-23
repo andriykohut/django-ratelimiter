@@ -14,6 +14,10 @@ class RateLimiterMiddleware(AbstractRateLimiterMiddleware):
         except Resolver404:
             pass
         # only ratelimit /test-middleware/hit/ requests
-        if match and match.url_name == "test_middleware" and match.kwargs["kind"] == "hit":
+        if (
+            match
+            and match.url_name == "test_middleware"
+            and match.kwargs["kind"] == "hit"
+        ):
             return "3/minute"
         return None
