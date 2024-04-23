@@ -43,5 +43,6 @@ urlpatterns = [
     path("drf/api-view/", views.drf_api_view, name="drf_api_view"),
     path("drf/view/", views.TestDRFView.as_view(), name="drf_view"),
     path("ninja/", views.api.urls),
+    path("test-middleware/<str:kind>/", views.test_middleware, name="test_middleware"),
     *router.urls,
 ]

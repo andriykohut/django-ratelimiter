@@ -12,6 +12,12 @@ theme:
     - navigation.footer
     - content.code.copy
 
+nav:
+  - index.md
+  - decorator.md
+  - middleware.md
+  - api_reference.md
+
 markdown_extensions:
 - pymdownx.highlight:
     anchor_linenums: true
