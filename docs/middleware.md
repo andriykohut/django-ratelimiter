@@ -22,4 +22,5 @@ class RateLimiterMiddleware(AbstractRateLimiterMiddleware):
         return None
 ```
 
-Middleware is customizable by overriding methods, see [api reference](/api_reference/#django_ratelimiter.middleware.AbstractRateLimiterMiddleware) for more details.
+Middleware is customizable by overriding methods,
+see [api reference](api_reference.md#django_ratelimiter.middleware.AbstractRateLimiterMiddleware) for more details.

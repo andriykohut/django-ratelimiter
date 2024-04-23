@@ -9,9 +9,13 @@ from django_ratelimiter.utils import get_storage, get_rate_limiter
 
 
 class AbstractRateLimiterMiddleware(abc.ABC):
-    """Abstract base class for rate limiting middleware."""
+    """Abstract base class for rate limiting middleware.
 
-    STRATEGY = "fixed-window"
+    Attributes:
+        STRATEGY: default rate limiter strategy. Defaults to `fixed-window`.
+    """
+
+    STRATEGY: str = "fixed-window"
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
         self.get_response = get_response
