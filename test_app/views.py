@@ -102,3 +102,7 @@ api = NinjaAPI()
 @api.get("/add")
 def add(request: HttpRequest, a: int, b: int):
     return {"result": a + b}
+
+
+def test_middleware(_: HttpRequest, kind: str) -> HttpResponse:
+    return HttpResponse("OK")

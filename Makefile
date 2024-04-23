@@ -1,3 +1,5 @@
+.PHONY: run-backends pretty lint test test-ci html-cov cleanup docs
+
 run-backends:
 	docker-compose up -d
 
@@ -24,3 +26,6 @@ cleanup:
 	docker-compose down -v
 	rm -rf dist
 	rm -rf htmlcov
+
+docs:
+	poetry run mkdocs serve
