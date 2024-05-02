@@ -32,7 +32,7 @@ mkdocs-material = "^9.5.18"
 djangorestframework = "^3.15.1"
 django-ninja = "^1.1.0"
 pytest-django = "^4.8.0"
-mkdocstrings = { extras = ["python"], version = "^0.24.3" }
+mkdocstrings = { extras = ["python"], version = ">=0.24.3,<0.26.0" }
 mike = "^2.0.0"
 
 [build-system]
