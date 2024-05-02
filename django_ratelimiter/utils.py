@@ -1,5 +1,5 @@
-from functools import partial, lru_cache
-from typing import Union, Sequence, Optional
+from functools import lru_cache, partial
+from typing import Optional, Sequence, Union
 
 from django.conf import settings
 from limits.storage import Storage

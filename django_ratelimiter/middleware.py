@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from limits import parse
 from limits.storage import Storage
 
-from django_ratelimiter.utils import get_storage, get_rate_limiter
+from django_ratelimiter.utils import get_rate_limiter, get_storage
 
 
 class AbstractRateLimiterMiddleware(abc.ABC):

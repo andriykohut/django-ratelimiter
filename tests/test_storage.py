@@ -1,6 +1,6 @@
 import time
-
 import uuid
+
 import pytest
 
 from django_ratelimiter.storage import CacheStorage

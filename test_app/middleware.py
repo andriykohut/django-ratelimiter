@@ -1,7 +1,7 @@
 from typing import Optional
 
 from django.http import HttpRequest
-from django.urls import resolve, Resolver404
+from django.urls import Resolver404, resolve
 
 from django_ratelimiter.middleware import AbstractRateLimiterMiddleware
 

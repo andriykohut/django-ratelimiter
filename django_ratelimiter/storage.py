@@ -1,8 +1,7 @@
 import time
-from typing import Union, Optional
+from typing import Optional, Union
 
-from django.core.cache import caches, BaseCache
-
+from django.core.cache import BaseCache, caches
 from limits.storage import Storage
 
 

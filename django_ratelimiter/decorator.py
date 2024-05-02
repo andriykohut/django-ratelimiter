@@ -1,11 +1,12 @@
-from typing import Callable, Literal, Sequence, Union, Optional
 from functools import wraps
+from typing import Callable, Literal, Optional, Sequence, Union
 
 from django.db import models
 from django.http import HttpRequest, HttpResponse
-from limits.storage import Storage
 from limits import parse
-from django_ratelimiter.types import ViewFunc, P
+from limits.storage import Storage
+
+from django_ratelimiter.types import P, ViewFunc
 from django_ratelimiter.utils import build_identifiers, get_rate_limiter
 
 

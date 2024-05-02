@@ -3,9 +3,9 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_http_methods
-from limits.storage import MemoryStorage, RedisStorage, MemcachedStorage
+from limits.storage import MemcachedStorage, MemoryStorage, RedisStorage
 from ninja import NinjaAPI
-from rest_framework import viewsets, serializers, views
+from rest_framework import serializers, views, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
