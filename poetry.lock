@@ -547,13 +547,13 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "limits"
-version = "3.11.0"
+version = "3.12.0"
 description = "Rate limiting utilities"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "limits-3.11.0-py3-none-any.whl", hash = "sha256:a19b31b28f692beb6c00de1ea61057dbb31929663e0c9f18d1dbb2f729a5ff6b"},
-    {file = "limits-3.11.0.tar.gz", hash = "sha256:2ce80fbf245ea737ade6fe1197c9bbdfc49a6e558f1950e5f722734cb275d781"},
+    {file = "limits-3.12.0-py3-none-any.whl", hash = "sha256:48d91e94a0888fb1251aa31423d716ae72ceff997231363f7968a5eaa51dc56d"},
+    {file = "limits-3.12.0.tar.gz", hash = "sha256:95764065715a11b9fdcc82558cac2fb59a1febbb7aa2acd045f72ab0c16ec04f"},
 ]
 
 [package.dependencies]
