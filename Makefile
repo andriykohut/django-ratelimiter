@@ -1,7 +1,7 @@
 .PHONY: run-backends pretty lint test test-ci html-cov cleanup docs
 
 run-backends:
-	docker-compose up -d
+	docker compose up -d
 
 pretty:
 	poetry run ruff check --fix
@@ -23,7 +23,7 @@ html-cov: test
 	open htmlcov/index.html
 
 cleanup:
-	docker-compose down -v
+	docker compose down -v
 	rm -rf dist
 	rm -rf htmlcov
 
